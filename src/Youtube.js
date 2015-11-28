@@ -19,7 +19,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE. */
-(function() {
+/*global define, YT*/
+(function (root, factory) {
+  if(typeof define === 'function' && define.amd) {
+    define(['videojs'], function(videojs){
+      return (root.Youtube = factory(videojs));
+    });
+  } else if(typeof module === 'object' && module.exports) {
+    module.exports = (root.Youtube = factory(require('videojs')));
+  } else {
+    root.Youtube = factory(root.videojs);
+  }
+}(this, function(videojs) {
   'use strict';
 
   var Tech = videojs.getComponent('Tech');
@@ -91,11 +102,11 @@ THE SOFTWARE. */
       if (typeof this.options_.autohide !== 'undefined') {
         playerVars.autohide = this.options_.autohide;
       }
-
+      /*jshint -W069 */
       if (typeof this.options_['cc_load_policy'] !== 'undefined') {
         playerVars['cc_load_policy'] = this.options_['cc_load_policy'];
       }
-
+      /*jshint +W069 */
       if (typeof this.options_.ytControls !== 'undefined') {
         playerVars.controls = this.options_.ytControls;
       }
@@ -129,11 +140,11 @@ THE SOFTWARE. */
         // Set the YouTube player on the same language than video.js
         playerVars.hl = this.options_.language.substr(0, 2);
       }
-
+      /*jshint -W069 */
       if (typeof this.options_['iv_load_policy'] !== 'undefined') {
         playerVars['iv_load_policy'] = this.options_['iv_load_policy'];
       }
-
+      /*jshint +W069 */
       if (typeof this.options_.list !== 'undefined') {
         playerVars.list = this.options_.list;
       } else if (this.url && typeof this.url.listId !== 'undefined') {
@@ -582,5 +593,7 @@ THE SOFTWARE. */
   loadApi();
   injectCss();
 
-  videojs.registerComponent('Youtube', Youtube);
-})();
+  videojs.registerTech('Youtube', Youtube);
+
+  return videojs;
+}));
